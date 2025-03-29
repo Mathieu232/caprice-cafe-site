@@ -17,6 +17,7 @@
       const soirStart = 17 * 60;
       const soirEnd = 22 * 60 + 30;
 
+      // Conditions selon l'heure
       if (totalMinutes >= midiStart && totalMinutes < soirStart) {
         window.location.href = "https://drive.google.com/file/d/1otbXLyysaZFH9PSm3orAujO7NF6AEBNj/view?usp=drive_link";
       } else if (totalMinutes >= soirStart && totalMinutes <= soirEnd) {
