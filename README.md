@@ -1,46 +1,49 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Carte du Caprice Café</title>
   <script>
     window.onload = function () {
       const userLang = navigator.language || navigator.userLanguage; // Détection de la langue du navigateur
-      console.log("Langue détectée : " + userLang); // Afficher la langue détectée dans la console (pour tester)
+      const now = new Date();
+      const hour = now.getHours();
+      const minutes = now.getMinutes();
+      const totalMinutes = hour * 60 + minutes;
 
-      // Liens des cartes en fonction des langues (les liens doivent être valides)
-      const carteMidi = {
-        fr: "https://drive.google.com/file/d/1otbXLyysaZFH9PSm3orAujO7NF6AEBNj/view?usp=drive_link", // Carte midi en français
-        en: "https://drive.google.com/file/d/1XXXXXX/view?usp=drive_link", // Carte midi en anglais
-        it: "https://drive.google.com/file/d/1ZZZZZZ/view?usp=drive_link", // Carte midi en italien
-        es: "https://drive.google.com/file/d/1BBBBBB/view?usp=drive_link", // Carte midi en espagnol
-      };
+      // Créneaux d'affichage : midi (11h30–17h), soir (17h–22h30)
+      const midiStart = 11 * 60 + 30;
+      const midiEnd = 17 * 60;
+      const soirStart = 17 * 60;
+      const soirEnd = 22 * 60 + 30;
 
-      const carteSoir = {
-        fr: "https://drive.google.com/file/d/1XDUFJ8YC9kNunZbjnbg2LgZkg7bi5SQV/view?usp=drive_link", // Carte soir en français
-        en: "https://drive.google.com/file/d/1YYYYYY/view?usp=drive_link", // Carte soir en anglais
-        it: "https://drive.google.com/file/d/1AAAAAA/view?usp=drive_link", // Carte soir en italien
-        es: "https://drive.google.com/file/d/1CCCCC/view?usp=drive_link", // Carte soir en espagnol
-      };
+      // Lien de la carte PDF en français
+      const carteFr = "https://drive.google.com/file/d/1otbXLyysaZFH9PSm3orAujO7NF6AEBNj/view?usp=drive_link"; 
 
-      // Choisir la langue du navigateur et afficher la carte correspondante
-      let lang = 'fr';  // Valeur par défaut (français)
-      if (userLang.startsWith("en")) {
-        lang = 'en';
-      } else if (userLang.startsWith("it")) {
-        lang = 'it';
-      } else if (userLang.startsWith("es")) {
-        lang = 'es';
+      // Choisir la langue cible pour Google Translate en fonction du navigateur
+      let targetLang = 'es'; // Par défaut, espagnol
+      if (userLang.startsWith("en")) targetLang = 'en';
+      else if (userLang.startsWith("it")) targetLang = 'it';
+      else if (userLang.startsWith("de")) targetLang = 'de';
+
+      // Lien de traduction Google
+      const translatedLink = `https://translate.google.com/translate?sl=fr&tl=${targetLang}&u=${carteFr}`;
+
+      // Rediriger en fonction de l'heure
+      if (totalMinutes >= midiStart && totalMinutes < soirStart) {
+        window.location.href = translatedLink; // Redirige vers la carte du midi traduite
+      } else if (totalMinutes >= soirStart && totalMinutes <= soirEnd) {
+        window.location.href = translatedLink; // Redirige vers la carte du soir traduite
+      } else {
+        document.getElementById("message").style.display = "block"; // Affiche un message si en dehors des horaires
       }
-
-      // Rediriger l'utilisateur vers la carte appropriée
-      window.location.href = totalMinutes >= midiStart && totalMinutes < soirStart ? carteMidi[lang] : carteSoir[lang];
     };
   </script>
 </head>
 <body>
-  <h1>Le Caprice Café</h1>
-  <p>Les cartes sont disponibles de 11h30 à 17h (midi) et de 17h à 22h30 (soir).</p>
-  <button onclick="window.location.href='https://translate.google.com'">Traduire cette page</button>  <!-- Ajout d'un bouton de traduction -->
+  <div id="message" style="display:none; text-align:center; margin-top: 50px;">
+    <h2>Le Caprice Café vous accueille prochainement !</h2>
+    <p>Les cartes sont disponibles de 11h30 à 17h (midi) et de 17h à 22h30 (soir).</p>
+  </div>
 </body>
 </html>
